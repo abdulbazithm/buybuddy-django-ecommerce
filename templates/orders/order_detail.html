@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .order-card {
+        border-radius: 10px;
+        padding: 25px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 20px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .status-PENDING { background: #ff9800; }
+    .status-PROCESSING { background: #2196F3; }
+    .status-SHIPPED { background: #3f51b5; }
+    .status-DELIVERED { background: #4caf50; }
+    .status-CANCELLED { background: #f44336; }
+
+    .product-box {
+        border: 1px solid #ddd;
+        padding: 12px;
+        border-radius: 10px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .product-box img {
+        width: 90px;
+        height: 90px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-right: 15px;
+        border: 1px solid #ddd;
+    }
+
+    .checkout-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px 6px 5px 0;
+        background: #000;
+        color: #fff;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .checkout-btn:hover {
+        background: #333;
+    }
+
+    .review-btn {
+        background: #ff9800;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        margin-right: 5px;
+    }
+
+    .review-btn:hover {
+        background: #e68900;
+    }
+
+    .delete-btn {
+        background: #d32f2f;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .delete-btn:hover {
+        background: #b71c1c;
+    }
+
+    #cancel-btn, #return-btn {
+        color: #f44336;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="order-card">
+
+        <h3 class="mb-3">🧾 Order Details #{{ order.id }}</h3>
+
+        <p><strong>Placed On:</strong> {{ order.created_at|date:"M d, Y" }}</p>
+
+        <p>
+            <strong>Status:</strong>
+            <span class="status-badge status-{{ order.status }}">
+                {{ order.status }}
+            </span>
+        </p>
+
+        {% if order.shipment %}
+        <p><strong>Tracking No:</strong> {{ order.shipment.tracking_no }}</p>
+        <p><strong>Shipment Status:</strong> {{ order.shipment.status }}</p>
+        {% endif %}
+
+        <hr>
+
+        <h4 class="fw-bold">Products</h4>
+
+        {% for item in order.items.all %}
+        <div class="product-box">
+
+            {% if item.product.images.all %}
+                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+            {% else %}
+                <img src="{% static 'images/no-image.png' %}" alt="No Image">
+            {% endif %}
+
+            <div style="flex: 1;">
+                <h5>{{ item.product.name }}</h5>
+                <p>Qty: {{ item.quantity }}</p>
+                <p>Price: ₹{{ item.price }}</p>
+
+                <br>
+
+                {% if order.status == "DELIVERED" %}
+                    {% if item.review %}
+                        <!-- Already reviewed: show edit + delete buttons -->
+                        <a href="{% url 'edit_review' item.review.id %}" class="review-btn">
+                            ✏️ Edit Review
+                        </a>
+
+                        <a href="{% url 'delete_review' item.review.id %}" class="delete-btn">
+                            🗑 Delete Review
+                        </a>
+
+                    {% else %}
+                        <!-- Not reviewed yet: show Add Review -->
+                        <a href="{% url 'add_review' item.id %}" class="review-btn">
+                            ⭐ Add Review
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="ms-auto text-end">
+                <strong>Subtotal:</strong> ₹{{ item.get_subtotal }}
+            </div>
+
+        </div>
+        {% endfor %}
+
+        <hr>
+
+        <h4>Total Amount: ₹{{ order.total_amount }}</h4>
+
+        <p><strong>Payment Method:</strong> {{ order.payment.method }}</p>
+        <p><strong>Payment Status:</strong> {{ order.payment.status }}</p>
+
+        <hr>
+
+        <h4>Shipping Address</h4>
+        <p>
+            {{ order.address.full_name }} <br>
+            {{ order.address.address }}, {{ order.address.city }} <br>
+            {{ order.address.state }} - {{ order.address.pincode }} <br>
+            Phone: {{ order.address.phone }}
+        </p>
+
+        <hr>
+
+        <h4 class="fw-bold">Actions</h4>
+
+        <a href="{% url 'download_invoice' order.id %}" class="checkout-btn">
+            📄 Download Invoice
+        </a>
+
+        {% if order.shipment %}
+        <a href="{% url 'track_order' order.shipment.tracking_no %}" class="checkout-btn">
+            🚚 Track Order
+        </a>
+        {% endif %}
+
+        {% if order.status != "CANCELLED" and order.status != "DELIVERED" %}
+            <a href="{% url 'cancel_order' order.id %}" class="checkout-btn" id="cancel-btn">❌ Cancel Order</a>
+        {% endif %}
+
+        {% if order.shipment.status == "DELIVERED" %}
+            {% if order.shipment.return_status != "REQUESTED" %}
+                <a href="{% url 'return_order' order.id %}" class="checkout-btn" id="return-btn">↩️ Return Order</a>
+            {% else %}
+                <p class="text-warning">Return Requested</p>
+            {% endif %}
+        {% endif %}
+
+        <a href="{% url 'my_orders' %}" class="checkout-btn">⬅ Back to My Orders</a>
+
+    </div>
+</div>
+
+{% endblock %}

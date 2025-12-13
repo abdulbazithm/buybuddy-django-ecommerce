@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="address-section">
+    <h2 class="address-title">📍 Your Saved Addresses</h2>
+
+    <div class="address-header">
+        <a href="{% url 'add_address' %}" class="add-address-btn">➕ Add New Address</a>
+    </div>
+
+    {% if addresses %}
+    <div class="address-container">
+        {% for addr in addresses %}
+        <div class="address-card">
+
+            <div class="address-details">
+                <h3>{{ addr.full_name }}</h3>
+                <p>{{ addr.address_line }}</p>
+                <p>{{ addr.city }}, {{ addr.state }}</p>
+                <p>{{ addr.country }} - {{ addr.postal_code }}</p>
+                <p class="phone">📞 {{ addr.phone }}</p>
+
+                {% if addr.is_default %}
+                    <span class="default-badge">⭐ Default Address</span>
+                {% endif %}
+            </div>
+
+            <div class="address-actions">
+                {% if not addr.is_default %}
+                <a href="{% url 'set_default_address' addr.id %}" class="action-btn set-default">Set Default</a>
+                {% endif %}
+
+                <a href="{% url 'edit_address' addr.id %}" class="action-btn edit">✏ Edit</a>
+
+                <a href="{% url 'delete_address' addr.id %}" class="action-btn delete"
+                   onclick="return confirm('Are you sure you want to delete this address?');">🗑 Delete</a>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="no-address">No saved addresses found.</p>
+        <a href="{% url 'add_address' %}" class="add-address-btn">➕ Add Your First Address</a>
+    {% endif %}
+</section>
+
+{% endblock %}

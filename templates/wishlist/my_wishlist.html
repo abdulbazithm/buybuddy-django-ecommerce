@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.wishlist-container {
+    margin: 30px auto;
+    max-width: 800px;
+    background: #fff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.wishlist-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.wishlist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wishlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafafa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #e3e3e3;
+}
+
+.wishlist-info {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.wishlist-buttons a {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.wishlist-buttons .remove-btn {
+    background: #ff4d4d;
+    color: white;
+}
+
+.wishlist-buttons .view-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.empty-message {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.shop-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 18px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+</style>
+
+<div class="wishlist-container">
+
+    <h2 class="wishlist-title">❤️ My Wishlist</h2>
+
+    {% if items %}
+        <ul class="wishlist-list">
+            {% for item in items %}
+                <li class="wishlist-item">
+
+                    <div class="wishlist-info">
+                        {{ item.product.name }} — ₹{{ item.product.price }}
+                    </div>
+
+                    <div class="wishlist-buttons">
+                        <a href="{% url 'remove_from_wishlist' item.id %}" class="remove-btn">❌ Remove</a>
+                        <a href="{% url 'product_detail' item.product.slug %}" class="view-btn">View</a>
+                    </div>
+
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p class="empty-message">No items in wishlist.</p>
+        <a href="{% url 'home' %}" class="shop-btn">Go to Shop</a>
+    {% endif %}
+
+</div>
+
+{% endblock %}

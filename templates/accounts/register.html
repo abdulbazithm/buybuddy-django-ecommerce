@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Register | BuyBuddy{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-container">
+    <h2>Create Your Account 🛍️</h2>
+    <p class="subtitle">Join the <strong>BuyBuddy</strong> family!</p>
+
+    <form method="POST" class="auth-form" id="registerForm">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label>Username</label>
+        {{ form.username }}
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        {{ form.email }}
+        <small id="emailError" class="validation-msg"></small>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        {{ form.password1 }}
+        <small id="strengthMsg" class="validation-msg"></small>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+        {{ form.password2 }}
+        <small id="matchMsg" class="validation-msg"></small>
+      </div>
+
+      <button type="submit" class="auth-btn">Register</button>
+    </form>
+
+    <p class="switch-link">Already have an account? 
+      <a href="{% url 'login' %}">Login here</a>
+    </p>
+
+    {% for message in messages %}
+      <p class="django-message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  </div>
+
+  <!-- JavaScript Validation -->
+  <script>
+    const emailInput = document.getElementById("id_email");
+    const pass1 = document.getElementById("id_password1");
+    const pass2 = document.getElementById("id_password2");
+    const emailError = document.getElementById("emailError");
+    const matchMsg = document.getElementById("matchMsg");
+    const strengthMsg = document.getElementById("strengthMsg");
+
+    // ✅ Gmail validation
+    emailInput.addEventListener("input", () => {
+      const emailVal = emailInput.value.trim();
+      if (emailVal && !emailVal.endsWith("@gmail.com")) {
+        emailError.textContent = "❌ Please use a valid Gmail address";
+        emailError.style.color = "red";
+      } else {
+        emailError.textContent = "";
+      }
+    });
+
+    // ✅ Password match check
+    const checkMatch = () => {
+      if (pass1.value && pass2.value) {
+        if (pass1.value === pass2.value) {
+          matchMsg.textContent = "✅ Passwords match";
+          matchMsg.style.color = "green";
+        } else {
+          matchMsg.textContent = "❌ Passwords do not match";
+          matchMsg.style.color = "red";
+        }
+      } else {
+        matchMsg.textContent = "";
+      }
+    };
+    pass1.addEventListener("input", checkMatch);
+    pass2.addEventListener("input", checkMatch);
+
+    // ✅ Password strength indicator
+    pass1.addEventListener("input", () => {
+      const val = pass1.value;
+      let strength = "";
+      let color = "";
+
+      if (val.length < 6) {
+        strength = "Weak 🔴";
+        color = "red";
+      } else if (val.match(/[A-Z]/) && val.match(/[0-9]/) && val.match(/[^A-Za-z0-9]/)) {
+        strength = "Strong 🟢";
+        color = "green";
+      } else {
+        strength = "Moderate 🟡";
+        color = "orange";
+      }
+
+      strengthMsg.textContent = `Password strength: ${strength}`;
+      strengthMsg.style.color = color;
+    });
+
+    // ✅ Gmail validation
+    emailInput.addEventListener("input", () => {
+    const emailVal = emailInput.value.trim();
+    const validPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // generic email pattern
+
+    if (emailVal && !validPattern.test(emailVal)) {
+      emailError.textContent = "❌ Please enter a valid email address (e.g., buybuddy@gmail.com)";
+      emailError.style.color = "red";
+    } else {
+       emailError.textContent = "";
+      }
+    });
+  </script>
+</section>
+{% endblock %}

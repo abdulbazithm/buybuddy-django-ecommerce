@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="checkout-section">
+    <h2>🧾 Checkout</h2>
+
+    <div class="checkout-container">
+
+        <!-- Left: Order Summary -->
+        <div class="order-summary">
+            <h3>Your Order</h3>
+
+            <ul>
+                {% for item in items %}
+                <li>
+                    {{ item.product.name }} × {{ item.quantity }}
+                    = ₹{{ item.get_subtotal }}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3>Total: ₹{{ total }}</h3>
+
+            {% if not items %}
+                <p>Your cart is empty. 
+                    <a href="{% url 'home' %}">Continue Shopping</a>
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Right: Address & Payment -->
+        <div class="checkout-form">
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Address Selection -->
+                <h3>📍 Select Address</h3>
+
+                {% if addresses %}
+                    {% for addr in addresses %}
+                        <label class="address-option">
+                            <input type="radio" name="address" value="{{ addr.id }}" required>
+
+                            <div class="addr-block">
+                                <strong>{{ addr.full_name }}</strong><br>
+                                {{ addr.address_line }}, {{ addr.city }}, {{ addr.state }} - {{ addr.postal_code }}<br>
+                                📞 {{ addr.phone }}
+
+                                {% if addr.is_default %}
+                                    <span class="default-label">⭐ Default</span>
+                                {% endif %}
+                            </div>
+                        </label>
+                        <br>
+                    {% endfor %}
+                {% else %}
+                    <p>No saved addresses found.</p>
+                    <a href="{% url 'add_address' %}?next=checkout" class="btn">➕ Add Address</a>
+                {% endif %}
+
+                <!-- Payment Selection -->
+                <h3>💳 Select Payment Method</h3>
+
+                <label>
+                    <input type="radio" name="payment_method" value="COD" required>
+                    Cash On Delivery
+                </label><br>
+
+                <label>
+                    <input type="radio" name="payment_method" value="CARD">
+                    Credit/Debit Card
+                </label><br>
+
+                <label>
+                    <input type="radio" name="payment_method" value="UPI">
+                    UPI
+                </label><br>
+
+                <label>
+                    <input type="radio" name="payment_method" value="NETBANK">
+                    Net Banking
+                </label><br><br>
+
+                <button type="submit" class="checkout-btn">Place Order</button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

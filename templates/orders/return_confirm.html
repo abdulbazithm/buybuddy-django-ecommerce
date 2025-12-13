@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .return-card {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    .return-card h3 {
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .return-card h5 {
+        margin: 10px 0;
+    }
+
+    .return-card p {
+        font-size: 16px;
+    }
+
+    .btn-return {
+        background-color: #f44336;
+        color: #fff;
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 8px;
+        border: none;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .btn-return:hover {
+        background-color: #d32f2f;
+        color: #fff;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: #fff;
+        padding: 6px 20px;
+        font-weight: 500;
+        border-radius: 8px;
+        border: none;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background-color: #5a6268;
+        color: #fff;
+        text-decoration: none;
+    }
+</style>
+
+<div class="return-card text-center">
+    <h3 class="text-danger">↩️ Confirm Return Request</h3>
+
+    <p>Are you sure you want to request a return for this order?</p>
+
+    <h5>Order #{{ order.id }}</h5>
+    <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+
+    <hr>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-return">Yes, Request Return</button>
+        <a href="{% url 'order_detail' order.id %}" class="btn-cancel">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+/* ---------------- PROFILE PAGE UI FIX ---------------- */
+
+.profile-section {
+    padding: 30px 20px;
+}
+
+.profile-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* Left Sidebar */
+.profile-sidebar {
+    width: 250px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.profile-link {
+    display: block;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #f5f6f6;
+    color: #111;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.profile-link:hover {
+    background: #febd69;
+    color: #111;
+}
+
+.logout-btn {
+    background: #ff4d4d;
+    color: white;
+}
+
+.logout-btn:hover {
+    background: #d93636;
+    color: white;
+}
+
+/* Right content area */
+.profile-content {
+    flex: 1;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-details-box {
+    margin-top: 20px;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.profile-details-box ul {
+    margin: 10px 0 15px;
+}
+
+.profile-details-box li {
+    margin-bottom: 8px;
+}
+
+.btn {
+    background: #232f3e;
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #131921;
+}
+</style>
+
+<section class="profile-section">
+    <h2>👤 My Account</h2>
+
+    <div class="profile-container">
+
+        <!-- Left Sidebar -->
+        <div class="profile-sidebar">
+            <a href="{% url 'profile' %}" class="profile-link">👤 Profile Overview</a>
+            <a href="{% url 'address_list' %}" class="profile-link">📍 Saved Addresses</a>
+            <a href="{% url 'view_cart' %}" class="profile-link">🛒 My Cart</a>
+            <a href="{% url 'my_orders' %}" class="profile-link">📦 My Orders</a>
+            <a href="{% url 'my_wishlist' %}" class="profile-link">❤️ Wishlist</a>
+            <a href="{% url 'logout' %}" class="profile-link logout-btn">🚪 Logout</a>
+        </div>
+
+        <!-- Right Content Area -->
+        <div class="profile-content">
+            <h3>Hello, {{ request.user.username }} 👋</h3>
+
+            <div class="profile-details-box">
+                <p><strong>Email:</strong> {{ request.user.email }}</p>
+                <p><strong>Member Since:</strong> {{ request.user.date_joined|date:"d M Y" }}</p>
+
+                <hr>
+
+                <h4>Your Saved Addresses</h4>
+                {% if addresses %}
+                    <ul>
+                        {% for addr in addresses %}
+                            <li>
+                                {{ addr.full_name }}, {{ addr.address_line }},
+                                {{ addr.city }} - {{ addr.postal_code }}
+                                {% if addr.is_default %}
+                                    ⭐ (Default)
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'address_list' %}" class="btn">Manage Addresses</a>
+                {% else %}
+                    <p>No saved addresses found.</p>
+                    <a href="{% url 'add_address' %}" class="btn">➕ Add Address</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

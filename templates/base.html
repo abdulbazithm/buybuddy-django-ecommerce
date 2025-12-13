@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BuyBuddy 🛍️</title>
+    {% load static %}
+    
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* ----------------------- SEARCH DROPDOWN UI ----------------------- */
+        .search-bar {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-form input {
+            width: 300px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .search-form button {
+            margin-left: 6px;
+            padding: 8px 12px;
+            border: none;
+            background: #2874f0;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            width: 300px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            z-index: 999;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .filter-dropdown label {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-dropdown select {
+            width: 100%;
+            padding: 7px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .apply-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px;
+            background: #2874f0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ----------------------- HEADER ----------------------- -->
+    <header class="header">
+        <div class="logo">
+            <a href="/">🛍️ <span>BuyBuddy</span></a>
+        </div>
+
+        <div class="search-bar">
+            <form action="{% url 'search' %}" method="get" class="search-form">
+
+                <input id="searchInput"
+                       type="text"
+                       name="q"
+                       placeholder="Search for products, brands and more..."
+                       autocomplete="off">
+
+                <button type="submit">🔍</button>
+
+                <!-- 🔽 FILTER DROPDOWN -->
+                <div class="filter-dropdown" id="filterDropdown">
+
+                    <label>Category</label>
+                    <select name="category">
+                        <option value="">All Categories</option>
+                        {% for c in categories %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>Brand</label>
+                    <select name="brand">
+                        <option value="">All Brands</option>
+                        {% for b in brands %}
+                        <option value="{{ b.id }}">{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>Price Range</label>
+                    <select name="price">
+                        <option value="">Any</option>
+                        <option value="0-500">₹0 - ₹500</option>
+                        <option value="500-1000">₹500 - ₹1000</option>
+                        <option value="1000-2000">₹1000 - ₹2000</option>
+                        <option value="2000-5000">₹2000 - ₹5000</option>
+                    </select>
+
+                    <label>Sort By</label>
+                    <select name="sort">
+                        <option value="">None</option>
+                        <option value="low">Price: Low → High</option>
+                        <option value="high">Price: High → Low</option>
+                        <option value="new">Newest</option>
+                    </select>
+
+                    <button type="submit" class="apply-btn">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="user-links">
+            {% if user.is_authenticated %}
+                <span class="welcome">Hello, {{ user.username }} 👋</span>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'my_orders' %}">My Orders</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+
+            <a href="{% url 'my_wishlist' %}" class="wishlist">Wishlist ♥</a>
+
+            <a href="{% url 'view_cart' %}" class="cart">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-text">Cart</span>
+
+                {% if cart_item_count > 0 %}
+                    <span class="cart-count">{{ cart_item_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </header>
+
+    <!-- ----------------------- CATEGORY NAVBAR ----------------------- -->
+    <nav class="navbar">
+        <a href="{% url 'category_products' 'electronics' %}">Electronics</a>
+        <a href="{% url 'category_products' 'fashion' %}">Fashion</a>
+        <a href="{% url 'category_products' 'home-kitchen' %}">Home & Kitchen</a>
+        <a href="{% url 'category_products' 'beauty' %}">Beauty</a>
+        <a href="{% url 'category_products' 'grocery' %}">Grocery</a>
+        <a href="{% url 'category_products' 'books' %}">Books</a>
+    </nav>
+
+    <!-- ----------------------- MAIN CONTENT ----------------------- -->
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- ----------------------- FOOTER ----------------------- -->
+    <footer class="footer">
+        <p>© 2025 BuyBuddy 💙 designed by abm</p>
+    </footer>
+
+    <!-- ----------------------- SEARCH DROPDOWN JS ----------------------- -->
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const filterDropdown = document.getElementById("filterDropdown");
+
+        searchInput.addEventListener("focus", () => {
+            filterDropdown.style.display = "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!document.querySelector(".search-form").contains(e.target)) {
+                filterDropdown.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

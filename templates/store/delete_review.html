@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* --- Container Styling --- */
+.add-review-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    background: #f3f3f3;
+    min-height: 70vh;
+}
+
+.add-review-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+/* --- Heading --- */
+.add-review-container h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #d32f2f;
+    text-align: center;
+}
+
+/* --- Description --- */
+.confirm-text {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* --- Buttons --- */
+.delete-btn {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #b71c1c;
+}
+
+.cancel-btn {
+    display: block;
+    margin-top: 15px;
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+    background: #232f3e;
+    padding: 10px 0;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+.cancel-btn:hover {
+    background: #131921;
+}
+</style>
+
+
+<div class="add-review-section">
+    <div class="add-review-container">
+        <h2>Delete Review</h2>
+
+        <p class="confirm-text">Are you sure you want to delete your review for <b>{{ product.name }}</b>?</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="delete-btn">Yes, Delete Review</button>
+        </form>
+
+        <a href="{% url 'product_detail' product.slug %}" class="cancel-btn">Cancel</a>
+    </div>
+</div>
+
+{% endblock %}

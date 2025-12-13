@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* --- Container Styling --- */
+.add-review-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    background: #f3f3f3;
+    min-height: 70vh;
+}
+
+.add-review-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+/* --- Heading --- */
+.add-review-container h2 {
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: #232f3e;
+    text-align: center;
+}
+
+/* --- Form Styling --- */
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-form input,
+.review-form textarea,
+.review-form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.review-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* --- Buttons --- */
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #fff;
+    background: #232f3e;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.back-btn:hover {
+    background: #131921;
+}
+</style>
+
+<div class="add-review-section">
+    <div class="add-review-container">
+        <h2>Edit Review for {{ product.name }}</h2>
+
+        <form method="POST" class="review-form">
+            {% csrf_token %}
+            {{ form.rating.label_tag }}
+            {{ form.rating }}
+
+            {{ form.review.label_tag }}
+            {{ form.review }}
+
+            <button class="submit-btn" type="submit">Update Review</button>
+        </form>
+
+        <a href="{% url 'product_detail' product.slug %}" class="back-btn">Back</a>
+    </div>
+</div>
+
+{% endblock %}

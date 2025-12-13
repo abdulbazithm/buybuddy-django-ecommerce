@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="category-title">{{ category.name }}</h2>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+
+        <!-- ✅ FIXED IMAGE LOADING -->
+        {% if product.images.all %}
+            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="product-img">
+        {% else %}
+            <img src="/static/store/img/no-image.png" alt="No image" class="product-img">
+        {% endif %}
+
+        <h3>{{ product.name }}</h3>
+        <p class="price">₹{{ product.price }}</p>
+
+        <!-- ✅ FIXED PRODUCT DETAIL LINK -->
+        <a href="{% url 'product_detail' product.slug %}" class="btn">
+            View Product
+        </a>
+
+    </div>
+    {% empty %}
+        <p>No products found in this category.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

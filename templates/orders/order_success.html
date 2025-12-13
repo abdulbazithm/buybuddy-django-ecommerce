@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="order-success">
+    <h2>✅ Order Placed Successfully!</h2>
+    <p>Thank you for shopping with <strong>BuyBuddy</strong>.</p>
+    <p>Your Order ID is <strong>#{{ order.id }}</strong></p>
+    <p>Total Amount: ₹{{ order.total_amount }}</p>
+
+    <h3>📦 Shipping Details</h3>
+    <p>{{ order.address.full_name }}<br>
+       {{ order.address.street }}, {{ order.address.city }}, {{ order.address.state }} - {{ order.address.pincode }}
+    </p>
+
+    <h3>🚚 Tracking Info</h3>
+    {% if order.shipment %}
+        <p>Tracking No: {{ order.shipment.tracking_no }}</p>
+        <p>Status: {{ order.shipment.status }}</p>
+    {% endif %}
+
+    <a href="{% url 'home' %}" class="checkout-btn">Continue Shopping</a>
+</section>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <style>
+        /* --- Address Form Page --- */
+
+       .address-form-container {
+           background: white;
+           max-width: 500px;
+           margin: auto;
+             padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-title {
+           text-align: center;
+             font-size: 22px;
+            margin-bottom: 20px;
+          color: #232f3e;
+          font-weight: 600;
+        }
+
+       .address-form label {
+             font-weight: 600;
+             margin-top: 10px;
+              display: block;
+              color: #333;
+        }
+
+        .address-form input {
+          width: 100%;
+          padding: 10px;
+              border-radius: 8px;
+             border: 1px solid #ccc;
+           margin-top: 5px;
+        }
+
+        .save-btn {
+           margin-top: 20px;
+               width: 100%;
+          background: #febd69;
+             border: none;
+           padding: 12px;
+           font-weight: 600;
+               border-radius: 8px;
+             cursor: pointer;
+            font-size: 16px;
+        }
+
+        .save-btn:hover {
+           background: #f3a847;
+        }
+
+    </style>
+</head>
+
+
+
+<div class="container">
+
+<div class="address-form-container">
+
+    <h2 class="form-title">➕ Add New Address</h2>
+
+    <form method="post" class="address-form">
+        {% csrf_token %}
+
+        <label>Full Name</label>
+        <input type="text" name="full_name" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+
+        <label>Address Line</label>
+        <input type="text" name="address_line" required>
+
+        <label>City</label>
+        <input type="text" name="city" required>
+
+        <label>State</label>
+        <input type="text" name="state" required>
+
+        <label>Postal Code</label>
+        <input type="text" name="postal_code" required>
+
+        <label>Country</label>
+        <input type="text" name="country" value="India" required>
+
+        <button type="submit" class="save-btn">Save Address</button>
+    </form>
+
+</div>
+
+</div>
+{% endblock %}

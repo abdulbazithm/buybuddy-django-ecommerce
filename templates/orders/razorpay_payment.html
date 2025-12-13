@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>💳 Online Payment</h2>
+<p>Total Amount: <strong>₹{{ amount|floatformat:2 }}</strong></p>
+
+<p style="color: green; font-weight: bold;">
+    Dummy Payment Mode Enabled — No real payment will happen.
+</p>
+
+<form action="{% url 'verify_payment' %}" method="POST">
+    {% csrf_token %}
+
+    <!-- Fake Razorpay values -->
+    <input type="hidden" name="razorpay_payment_id" value="pay_dummy_{{ order_id }}">
+    <input type="hidden" name="razorpay_order_id" value="{{ order_id }}">
+    <input type="hidden" name="razorpay_signature" value="dummy_signature">
+
+    <button type="submit" class="checkout-btn">
+        Pay ₹{{ amount|floatformat:2 }} (Dummy Payment)
+    </button>
+</form>
+
+{% endblock %}

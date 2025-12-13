@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Search Results for "{{ query }}"</h2>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+
+        <a href="{% url 'product_detail' product.slug %}">
+            {% if product.images.first %}
+                <img src="{{ product.images.first.image.url }}">
+            {% else %}
+                <img src="https://via.placeholder.com/200x200?text=No+Image">
+            {% endif %}
+        </a>
+
+        <a href ="{% url 'product_detail' product.slug %}"><h3>{{ product.name }}</h3></a> 
+        <p class="price">₹{{ product.price }}</p>
+
+    </div>
+    {% empty %}
+        <p>No products found.</p>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

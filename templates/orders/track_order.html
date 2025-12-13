@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* Container Styling */
+.tracking-card {
+    border-radius: 12px;
+    padding: 30px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.tracking-title {
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 20px;
+}
+
+/* Timeline Container */
+.timeline {
+    position: relative;
+    padding-left: 40px;
+    margin-top: 30px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    width: 4px;
+    height: 100%;
+    background: #e0e0e0;
+    border-radius: 8px;
+}
+
+/* Timeline Item */
+.timeline-item {
+    position: relative;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    background: #f7f7f7;
+    transition: 0.3s;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -26px;
+    top: 15px;
+    width: 16px;
+    height: 16px;
+    background: #bbb;
+    border: 3px solid white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+/* Active Step */
+.timeline-item.active {
+    background: #e9fbe7;
+    border-left: 4px solid #28a745;
+    font-weight: 600;
+    color: #1f7a33;
+}
+
+.timeline-item.active::before {
+    background: #28a745;
+}
+
+</style>
+
+<div class="container mt-4">
+    <div class="tracking-card shadow">
+
+        <h3 class="tracking-title">Tracking Order #{{ order.id }}</h3>
+
+        <p><strong>Tracking Number:</strong> {{ order.shipment.tracking_no }}</p>
+        <p><strong>Current Status:</strong> {{ order.shipment.status }}</p>
+
+        {% if order.shipment.delivery_date %}
+        <p><strong>Delivered On:</strong> {{ order.shipment.delivery_date|date:"M d, Y" }}</p>
+        {% endif %}
+
+        <hr>
+
+        <h5>Tracking Progress</h5>
+
+        <div class="timeline">
+
+            <div class="timeline-item 
+                {% if order.shipment.status in 'PLACED PROCESSING SHIPPED OUT_FOR_DELIVERY DELIVERED' %}active{% endif %}">
+                Order Placed
+            </div>
+
+            <div class="timeline-item
+                {% if order.shipment.status in 'PROCESSING SHIPPED OUT_FOR_DELIVERY DELIVERED' %}active{% endif %}">
+                Processing
+            </div>
+
+            <div class="timeline-item
+                {% if order.shipment.status in 'SHIPPED OUT_FOR_DELIVERY DELIVERED' %}active{% endif %}">
+                Shipped
+            </div>
+
+            <div class="timeline-item
+                {% if order.shipment.status in 'OUT_FOR_DELIVERY DELIVERED' %}active{% endif %}">
+                Out For Delivery
+            </div>
+
+            <div class="timeline-item
+                {% if order.shipment.status == 'DELIVERED' %}active{% endif %}">
+                Delivered
+            </div>
+
+        </div>
+
+        <a href="{% url 'order_detail' order.id %}"
+           class="checkout-btn">Back to Order</a>
+
+    </div>
+</div>
+
+{% endblock %}
