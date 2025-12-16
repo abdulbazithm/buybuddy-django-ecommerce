@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from accounts.models import Seller
+
 
 
 # Category Model
@@ -31,14 +31,7 @@ class Brand(models.Model):
 
 # Product Model
 class Product(models.Model):
-    seller = models.ForeignKey(
-       Seller,
-       on_delete=models.CASCADE,
-       related_name='products',
-       null=True,
-       blank=True
-    )
-
+    
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     name = models.CharField(max_length=150)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Address, Seller
+from .models import Profile, Address
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -11,10 +11,3 @@ class AddressAdmin(admin.ModelAdmin):
     list_filter = ('country', 'state', 'is_default')
     search_fields = ('full_name', 'city', 'postal_code')
 
-
-@admin.register(Seller)
-class SellerAdmin(admin.ModelAdmin):
-    list_display = ('store_name', 'user', 'phone', 'is_approved', 'created_at')
-    list_filter = ('is_approved',)
-    search_fields = ('store_name', 'user__username', 'phone')
-    list_editable = ('is_approved',)
