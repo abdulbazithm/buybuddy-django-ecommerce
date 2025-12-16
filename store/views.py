@@ -7,6 +7,9 @@ from django.db.models import Q
 from .forms import ReviewForm
 from django.contrib import messages
 
+
+
+
 # 🏠 Home Page
 def home(request):
     products = Product.objects.filter(is_available=True).prefetch_related('images')
@@ -189,3 +192,5 @@ def delete_review(request, review_id):
         'review': review,
         'product': review.product
     })
+
+

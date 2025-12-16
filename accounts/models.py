@@ -31,3 +31,19 @@ class Address(models.Model):
     def full_address(self):
         return f"{self.address_line}, {self.city}, {self.state}, {self.country} - {self.postal_code}"
 
+
+class Seller(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    store_name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=15)
+    address = models.TextField()
+    is_approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.store_name
+
+
+@property
+def is_seller(self):
+    return hasattr(self, 'seller')

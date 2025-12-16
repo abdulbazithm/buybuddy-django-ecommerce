@@ -10,6 +10,8 @@ urlpatterns = [
     path("edit-address/<int:id>/", views.edit_address, name="edit_address"),
     path("delete-address/<int:id>/", views.delete_address, name="delete_address"),
     path("set-default/<int:id>/", views.set_default_address, name="set_default_address"),
+
+
     
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),

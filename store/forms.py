@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review
+from .models import Review, Product
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -9,3 +9,10 @@ class ReviewForm(forms.ModelForm):
             'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
             'review': forms.Textarea(attrs={'rows': 3}),
         }
+
+
+
+class SellerProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        exclude = ['seller', 'created_at', 'updated_at']

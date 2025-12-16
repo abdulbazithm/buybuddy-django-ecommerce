@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import RegisterForm
 from .models import Address
 from django.contrib.auth.decorators import login_required
+from store.models import Product
 
 def register_view(request):
     if request.method == 'POST':
@@ -32,11 +33,18 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f'Welcome back, {user.username}! 🎉')
-            return redirect('home')  # Redirect to homepage after login
+
+            # Check if user is a seller
+            if hasattr(user, 'seller'):
+                return redirect('seller_dashboard')  # Seller dashboard
+            else:
+                return redirect('home')  # Normal user homepage
+
         else:
             messages.error(request, 'Invalid username or password.')
 
     return render(request, 'accounts/login.html')
+
 
 
 def logout_view(request):
@@ -123,3 +131,5 @@ def profile_view(request):
     return render(request, 'accounts/profile.html', {
         'addresses': addresses
     })
+
+
