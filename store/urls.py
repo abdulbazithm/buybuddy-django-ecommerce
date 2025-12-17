@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import load_initial_data
+from .views import create_render_superuser
 
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path("search/", views.search_products, name="search"),
 
     path('load-fixture/', load_initial_data, name='load_fixture'),
+    path('create-superuser/', create_render_superuser, name='create_superuser'),
 
 
  

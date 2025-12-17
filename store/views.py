@@ -11,6 +11,10 @@ from django.core.management import call_command
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 
+from django.contrib.auth import get_user_model
+
+
+
 
 # 🏠 Home Page
 def home(request):
@@ -203,3 +207,11 @@ def load_initial_data(request):
         return HttpResponse("Initial data loaded successfully!")
     except Exception as e:
         return HttpResponse(f"Error: {e}")
+    
+
+def create_render_superuser(request):
+    User = get_user_model()
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@example.com", "abm@123")
+        return HttpResponse("Superuser created!")
+    return HttpResponse("Superuser already exists!")
