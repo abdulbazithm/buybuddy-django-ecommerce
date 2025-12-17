@@ -5,9 +5,6 @@ import os
 from buybuddy.settings import BASE_DIR
 
 def seed_data():
-    # 🛑 If products already exist, do nothing
-    if Product.objects.exists():
-        return
 
     # =====================
     # Categories
@@ -34,16 +31,12 @@ def seed_data():
         category_objs[name] = obj
 
     # =====================
-    # Brands (optional demo)
+    # Brand
     # =====================
-    brand_names = ["Demo Brand"]
-    brand_objs = {}
-    for brand in brand_names:
-        obj, _ = Brand.objects.get_or_create(
-            name=brand,
-            defaults={"description": f"{brand} products", "is_active": True}
-        )
-        brand_objs[brand] = obj
+    brand_obj, _ = Brand.objects.get_or_create(
+        name="Demo Brand",
+        defaults={"description": "Demo Brand products", "is_active": True}
+    )
 
     # =====================
     # Products + Images
@@ -58,23 +51,27 @@ def seed_data():
     ]
 
     for prod in products:
-        product_obj = Product.objects.create(
+        # Create product if it does not exist
+        product_obj, created = Product.objects.get_or_create(
             name=prod["name"],
-            slug=slugify(prod["name"]),
-            category=category_objs[prod["category"]],
-            brand=brand_objs["Demo Brand"],
-            price=prod["price"],
-            stock=10,
-            description=f"Demo product: {prod['name']}",
-            is_available=True,
+            defaults={
+                "slug": slugify(prod["name"]),
+                "category": category_objs[prod["category"]],
+                "brand": brand_obj,
+                "price": prod["price"],
+                "stock": 10,
+                "description": f"Demo product: {prod['name']}",
+                "is_available": True,
+            }
         )
 
-        # Add product image
-        image_path = os.path.join(BASE_DIR, "store/static/store/images", prod["image"])
-        if os.path.exists(image_path):
-            with open(image_path, "rb") as f:
-                ProductImage.objects.create(
-                    product=product_obj,
-                    image=File(f),
-                    is_featured=True
-                )
+        # Add product image if not already exists
+        if not ProductImage.objects.filter(product=product_obj).exists():
+            image_path = os.path.join(BASE_DIR, "store/static/store/images", prod["image"])
+            if os.path.exists(image_path):
+                with open(image_path, "rb") as f:
+                    ProductImage.objects.create(
+                        product=product_obj,
+                        image=File(f),
+                        is_featured=True
+                    )
