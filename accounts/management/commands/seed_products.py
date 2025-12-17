@@ -9,6 +9,10 @@ class Command(BaseCommand):
     help = "Seed initial products with images"
 
     def handle(self, *args, **kwargs):
+        self.stdout.write("🟢 Clearing old products and images...")
+        ProductImage.objects.all().delete()
+        Product.objects.all().delete()
+
         # =====================
         # Categories
         # =====================
@@ -54,11 +58,11 @@ class Command(BaseCommand):
         ]
 
         for prod in products:
-            # Create product if it doesn't exist
+            slug = slugify(prod["name"])
             product_obj, created = Product.objects.get_or_create(
-                name=prod["name"],
+                slug=slug,
                 defaults={
-                    "slug": slugify(prod["name"]),
+                    "name": prod["name"],
                     "category": category_objs[prod["category"]],
                     "brand": brand_obj,
                     "price": prod["price"],
@@ -68,15 +72,17 @@ class Command(BaseCommand):
                 }
             )
 
-            # Add product image if not exists
+            # Add product image
             if not ProductImage.objects.filter(product=product_obj).exists():
                 image_path = os.path.join(BASE_DIR, "store/static/store/images", prod["image"])
                 if os.path.exists(image_path):
                     with open(image_path, "rb") as f:
                         ProductImage.objects.create(
                             product=product_obj,
-                            image=File(f, name=prod["image"]),  # ⚡ Use only filename
+                            image=File(f, name=prod["image"]),
                             is_featured=True
                         )
+                else:
+                    self.stdout.write(self.style.WARNING(f"⚠️ Image not found: {prod['image']}"))
 
-        self.stdout.write(self.style.SUCCESS("✅ All products seeded successfully!"))
+        self.stdout.write(self.style.SUCCESS("✅ All products with images seeded successfully!"))
