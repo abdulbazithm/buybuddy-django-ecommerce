@@ -5,8 +5,5 @@ class AccountsConfig(AppConfig):
     name = "accounts"
 
     def ready(self):
-        try:
-            from .seed import seed_data
-            seed_data()
-        except Exception:
-            pass
+        # REMOVE the seed call here!
+        pass
