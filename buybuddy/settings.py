@@ -31,11 +31,17 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "buybuddy-wtzh.onrender.com"]
+
+# Optional: if you want to still allow override from env
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS', default="localhost,127.0.0.1,buybuddy-wtzh.onrender.com").split(",")
+
+# CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
     "https://buybuddy-wtzh.onrender.com",
 ]
-
 
 
 
