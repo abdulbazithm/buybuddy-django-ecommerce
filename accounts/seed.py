@@ -70,7 +70,7 @@ def seed_data():
         )
 
         # Add product image
-        image_path = os.path.join(BASE_DIR, "store/static/images", prod["image"])
+        image_path = os.path.join(BASE_DIR, "store/static/store/images", prod["image"])
         if os.path.exists(image_path):
             with open(image_path, "rb") as f:
                 ProductImage.objects.create(
