@@ -7,11 +7,6 @@ from django.db.models import Q
 from .forms import ReviewForm
 from django.contrib import messages
 
-from django.core.management import call_command
-from django.http import HttpResponse
-from django.contrib.admin.views.decorators import staff_member_required
-
-from django.contrib.auth import get_user_model
 
 
 
@@ -200,18 +195,3 @@ def delete_review(request, review_id):
     })
 
 
-@staff_member_required
-def load_initial_data(request):
-    try:
-        call_command('loaddata', 'initial_data.json')  # your fixture file name
-        return HttpResponse("Initial data loaded successfully!")
-    except Exception as e:
-        return HttpResponse(f"Error: {e}")
-    
-
-def create_render_superuser(request):
-    User = get_user_model()
-    if not User.objects.filter(username="admin").exists():
-        User.objects.create_superuser("admin", "admin@example.com", "abm@123")
-        return HttpResponse("Superuser created!")
-    return HttpResponse("Superuser already exists!")
