@@ -1,6 +1,8 @@
 from django.utils.text import slugify
-from store.models import Category, Brand, Product
-
+from store.models import Category, Brand, Product, ProductImage
+from django.core.files import File
+import os
+from buybuddy.settings import BASE_DIR
 
 def seed_data():
     # 🛑 If products already exist, do nothing
@@ -10,87 +12,69 @@ def seed_data():
     # =====================
     # Categories
     # =====================
-    categories = [
-        {
-            "name": "Electronics",
-            "description": "Electronic gadgets and devices"
-        },
-        {
-            "name": "Fashion",
-            "description": "Clothing and fashion accessories"
-        },
-        {
-            "name": "Groceries",
-            "description": "Daily grocery essentials"
-        },
+    category_list = [
+        "Electronics",
+        "Fashion",
+        "Home & Kitchen",
+        "Beauty",
+        "Grocery",
+        "Books"
     ]
 
     category_objs = {}
-    for cat in categories:
+    for name in category_list:
         obj, _ = Category.objects.get_or_create(
-            name=cat["name"],
+            name=name,
             defaults={
-                "slug": slugify(cat["name"]),
-                "description": cat["description"],
+                "slug": slugify(name),
+                "description": f"Demo products for {name}",
                 "is_active": True,
             }
         )
-        category_objs[cat["name"]] = obj
+        category_objs[name] = obj
 
     # =====================
-    # Brands
+    # Brands (optional demo)
     # =====================
-    brands = ["Samsung", "Nike", "Local Farm"]
-
+    brand_names = ["Demo Brand"]
     brand_objs = {}
-    for brand in brands:
+    for brand in brand_names:
         obj, _ = Brand.objects.get_or_create(
             name=brand,
-            defaults={
-                "description": f"{brand} brand products",
-                "is_active": True,
-            }
+            defaults={"description": f"{brand} products", "is_active": True}
         )
         brand_objs[brand] = obj
 
     # =====================
-    # Products
+    # Products + Images
     # =====================
     products = [
-        {
-            "name": "Samsung Galaxy Smartphone",
-            "category": "Electronics",
-            "brand": "Samsung",
-            "price": 14999,
-            "stock": 10,
-            "description": "Latest Samsung smartphone with modern features",
-        },
-        {
-            "name": "Men Cotton T-Shirt",
-            "category": "Fashion",
-            "brand": "Nike",
-            "price": 599,
-            "stock": 25,
-            "description": "Comfortable cotton t-shirt for daily wear",
-        },
-        {
-            "name": "Organic Rice 5kg",
-            "category": "Groceries",
-            "brand": "Local Farm",
-            "price": 499,
-            "stock": 50,
-            "description": "Healthy organic rice for family use",
-        },
+        {"name": "Smartphone", "category": "Electronics", "image": "electronics.jpg", "price": 14999},
+        {"name": "Men T-Shirt", "category": "Fashion", "image": "fashion.jpg", "price": 599},
+        {"name": "Blender", "category": "Home & Kitchen", "image": "home_kitchen.jpg", "price": 2499},
+        {"name": "Lipstick", "category": "Beauty", "image": "beauty.jpg", "price": 399},
+        {"name": "Organic Rice 5kg", "category": "Grocery", "image": "grocery.jpg", "price": 499},
+        {"name": "As Long As the Lemon Trees Grow", "category": "Books", "image": "books.jpg", "price": 799},
     ]
 
-    for product in products:
-        Product.objects.create(
-            name=product["name"],
-            slug=slugify(product["name"]),
-            category=category_objs[product["category"]],
-            brand=brand_objs[product["brand"]],
-            price=product["price"],
-            stock=product["stock"],
-            description=product["description"],
+    for prod in products:
+        product_obj = Product.objects.create(
+            name=prod["name"],
+            slug=slugify(prod["name"]),
+            category=category_objs[prod["category"]],
+            brand=brand_objs["Demo Brand"],
+            price=prod["price"],
+            stock=10,
+            description=f"Demo product: {prod['name']}",
             is_available=True,
         )
+
+        # Add product image
+        image_path = os.path.join(BASE_DIR, "store/static/images", prod["image"])
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as f:
+                ProductImage.objects.create(
+                    product=product_obj,
+                    image=File(f),
+                    is_featured=True
+                )
