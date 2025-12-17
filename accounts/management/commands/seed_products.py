@@ -75,8 +75,8 @@ class Command(BaseCommand):
                     with open(image_path, "rb") as f:
                         ProductImage.objects.create(
                             product=product_obj,
-                            image=File(f),
+                            image=File(f, name=prod["image"]),  # ⚡ Use only filename
                             is_featured=True
                         )
 
-        self.stdout.write(self.style.SUCCESS("Products seeded successfully!"))
+        self.stdout.write(self.style.SUCCESS("✅ All products seeded successfully!"))
